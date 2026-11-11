@@ -76,6 +76,8 @@ tasks:
       - pkill -f '/Yubi Ki-Yay.app/Contents/MacOS/' || true
       - mkdir -p "$HOME/Applications" && rm -rf "$HOME/Applications/Yubi Ki-Yay.app"
       - cp -R bin/yubi-ki-yay.app "$HOME/Applications/Yubi Ki-Yay.app"
+      - /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -u bin/yubi-ki-yay.app || true
+      - rm -rf bin/yubi-ki-yay.app
       - mkdir -p ~/.local/bin
       - ln -sf "$HOME/Applications/Yubi Ki-Yay.app/Contents/MacOS/yubi-ki-yay" ~/.local/bin/yubikiyay
       - open "$HOME/Applications/Yubi Ki-Yay.app"

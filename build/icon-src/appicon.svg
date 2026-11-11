@@ -1,9 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
   <defs>
-    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#8fbfe8"/>
-      <stop offset="0.6" stop-color="#f6d3a3"/>
-      <stop offset="1" stop-color="#f39a5c"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4a8a35"/>
+      <stop offset="0.35" stop-color="#1f6038"/>
+      <stop offset="0.65" stop-color="#004a3a"/>
+      <stop offset="1" stop-color="#01313f"/>
     </linearGradient>
     <linearGradient id="key" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0" stop-color="#1b1b1d"/>
@@ -28,7 +29,7 @@
       <stop offset="0" stop-color="#b49a5c" stop-opacity="0.55"/>
       <stop offset="1" stop-color="#b49a5c" stop-opacity="0"/>
     </radialGradient>
-    <clipPath id="frame"><rect x="0" y="0" width="1024" height="924"/></clipPath>
+    <clipPath id="frame"><rect x="100" y="100" width="824" height="824" rx="185"/></clipPath>
     <mask id="keyhole"><rect width="1024" height="1024" fill="#fff"/><circle cx="512" cy="210" r="28" fill="#000"/></mask>
     <path id="vestshape" d="M398 492 L452 492 L452 520 C456 600 494 626 512 626 C530 626 568 600 572 520 L572 492 L626 492
              L626 548 C630 604 660 628 700 636 L716 1000 L308 1000 L324 636 C364 628 394 604 398 548 Z"/>
@@ -36,6 +37,7 @@
   </defs>
 
   <g clip-path="url(#frame)">
+    <rect x="100" y="100" width="824" height="824" fill="url(#bg)"/>
     <rect x="392" y="140" width="240" height="900" rx="60" fill="url(#key)" stroke="#000" stroke-width="6" mask="url(#keyhole)"/>
     <circle cx="512" cy="210" r="28" fill="none" stroke="#000" stroke-width="5"/>
 
@@ -53,6 +55,5 @@
             stroke="#a8996f" stroke-width="6" fill="none" opacity="0.45" stroke-linecap="round"/>
     </g>
     <use href="#vestshape" fill="none" stroke="#7d6e4c" stroke-width="6" stroke-linejoin="round"/>
-    <rect x="311" y="918" width="402" height="6" fill="#7d6e4c"/>
   </g>
 </svg>
