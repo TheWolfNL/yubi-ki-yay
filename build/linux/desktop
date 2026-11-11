@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Name=Yubi Ki-Yay
+Comment=Tells you when your YubiKey wants a touch
+# The Exec line includes %u to pass the URL to the application
+Exec=/usr/local/bin/yubi-ki-yay %u
+Terminal=false
+Type=Application
+Icon=yubi-ki-yay
+Categories=Utility;
+StartupWMClass=yubi-ki-yay
+
+ 

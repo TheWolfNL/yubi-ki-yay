@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="/style.css"/>
+    <title>Yubi Ki-Yay</title>
+</head>
+<body>
+<main>
+    <header>
+        <img src="/appicon.png" alt="" width="56" height="56"/>
+        <div>
+            <h1>Yubi Ki-Yay</h1>
+            <p class="sub">Never miss a YubiKey touch again.</p>
+        </div>
+    </header>
+
+    <form id="settings">
+        <label class="row"><input type="checkbox" name="banner"/> Banner at the top of the screen</label>
+        <label class="row"><input type="checkbox" name="sound"/> Sound
+            <select name="soundName"></select>
+            <button type="button" id="preview" title="Preview sound">▶</button>
+        </label>
+        <label class="row"><input type="checkbox" name="terminalLine"/> Line in the terminal</label>
+        <label class="row"><input type="checkbox" name="trayFlash"/> Flash “Touch!” in the menu bar</label>
+        <label class="row">Menu bar icon
+            <select name="trayMode">
+                <option value="always">Always</option>
+                <option value="onTouch">Only when a touch is needed</option>
+            </select>
+        </label>
+    </form>
+
+    <footer>
+        <span id="status" role="status"></span>
+        <button type="button" id="test">Test alert</button>
+    </footer>
+</main>
+<script type="module" src="/src/main.ts"></script>
+</body>
+</html>

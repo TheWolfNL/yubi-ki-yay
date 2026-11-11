@@ -1,0 +1,17 @@
+{
+	"fixed": {
+		"file_version": "0.1.0",
+		"product_version": "0.1.0"
+	},
+	"info": {
+		"0409": {
+			"FileVersion": "0.1.0",
+			"ProductVersion": "0.1.0",
+			"CompanyName": "My Company",
+			"FileDescription": "Tells you when your YubiKey wants a touch",
+			"LegalCopyright": "© 2026, My Company",
+			"ProductName": "Yubi Ki-Yay",
+			"Comments": "This is a comment"
+		}
+	}
+}
