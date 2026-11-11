@@ -8,6 +8,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"slices"
 	"sort"
 	"strings"
 )
@@ -107,9 +108,89 @@ func Save(cfg Config) error {
 	return nil
 }
 
-// SoundPath maps a system sound name such as "Glass" to its file.
+// SoundPath maps a sound name to its file: custom sounds keep their extension, system sounds such as "Glass" have none.
 func SoundPath(name string) string {
-	return filepath.Join(systemSoundsDir, name+".aiff")
+	if filepath.Ext(name) == "" {
+		return filepath.Join(systemSoundsDir, name+".aiff")
+	}
+	dir, err := SoundsDir()
+	if err != nil {
+		return ""
+	}
+	return filepath.Join(dir, filepath.Base(name))
+}
+
+// SoundsDir returns the directory holding user-added sounds.
+func SoundsDir() (string, error) {
+	dir, err := Dir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(dir, "sounds"), nil
+}
+
+// AudioExtensions lists the file types afplay can play.
+var AudioExtensions = []string{".aiff", ".aif", ".caf", ".m4a", ".mp3", ".wav"}
+
+// CustomSounds lists the user-added sound file names.
+func CustomSounds() ([]string, error) {
+	dir, err := SoundsDir()
+	if err != nil {
+		return nil, err
+	}
+	entries, err := os.ReadDir(dir)
+	if errors.Is(err, fs.ErrNotExist) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("list custom sounds: %w", err)
+	}
+	var names []string
+	for _, e := range entries {
+		if !e.IsDir() && slices.Contains(AudioExtensions, strings.ToLower(filepath.Ext(e.Name()))) {
+			names = append(names, e.Name())
+		}
+	}
+	sort.Strings(names)
+	return names, nil
+}
+
+// ImportSound copies src into the sounds directory and returns its sound name.
+func ImportSound(src string) (string, error) {
+	if !slices.Contains(AudioExtensions, strings.ToLower(filepath.Ext(src))) {
+		return "", fmt.Errorf("unsupported audio type %q", filepath.Ext(src))
+	}
+	dir, err := SoundsDir()
+	if err != nil {
+		return "", err
+	}
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		return "", fmt.Errorf("create sounds dir: %w", err)
+	}
+	data, err := os.ReadFile(src)
+	if err != nil {
+		return "", fmt.Errorf("read sound: %w", err)
+	}
+	name := filepath.Base(src)
+	if err := os.WriteFile(filepath.Join(dir, name), data, 0o644); err != nil {
+		return "", fmt.Errorf("write sound: %w", err)
+	}
+	return name, nil
+}
+
+// RemoveSound deletes a user-added sound.
+func RemoveSound(name string) error {
+	if filepath.Ext(name) == "" {
+		return fmt.Errorf("%q is a system sound", name)
+	}
+	dir, err := SoundsDir()
+	if err != nil {
+		return err
+	}
+	if err := os.Remove(filepath.Join(dir, filepath.Base(name))); err != nil {
+		return fmt.Errorf("remove sound: %w", err)
+	}
+	return nil
 }
 
 // SystemSounds lists the sound names available in /System/Library/Sounds.

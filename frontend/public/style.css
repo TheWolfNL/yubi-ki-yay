@@ -110,3 +110,7 @@ body.leaving .banner-card {
 @keyframes slide-out {
     to { transform: translateX(110%); opacity: 0; }
 }
+
+.row select { max-width: 160px; }
+.row button { padding: 2px 8px; }
+button:disabled { opacity: 0.4; }

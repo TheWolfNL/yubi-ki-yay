@@ -31,24 +31,68 @@ export function initSettings() {
         };
     }
 
+    const removeButton = document.getElementById("remove-sound") as HTMLButtonElement;
+
+    function group(label: string, names: string[] | null) {
+        const g = document.createElement("optgroup");
+        g.label = label;
+        g.append(...(names ?? []).map((name) => new Option(name, name)));
+        return g;
+    }
+
+    async function loadSounds() {
+        const sounds = await SettingsService.Sounds();
+        const groups = [group("Custom", sounds.custom), group("System", sounds.system)];
+        soundSelect.replaceChildren(...groups.filter((g) => g.children.length > 0));
+    }
+
+    function updateRemove() {
+        removeButton.disabled = !soundSelect.value.includes(".");
+    }
+
     async function load() {
-        const [cfg, sounds] = await Promise.all([SettingsService.Get(), SettingsService.Sounds()]);
-        soundSelect.replaceChildren(...(sounds ?? []).map((name) => new Option(name, name)));
+        const [cfg] = await Promise.all([SettingsService.Get(), loadSounds()]);
         for (const name of toggles) {
             checkbox(name).checked = cfg[name];
         }
         soundSelect.value = cfg.soundName;
         trayModeSelect.value = cfg.trayMode;
         soundSelect.disabled = !cfg.sound;
+        updateRemove();
     }
 
     form.addEventListener("change", async () => {
+        updateRemove();
         soundSelect.disabled = !checkbox("sound").checked;
         try {
             await SettingsService.Save(read());
             flash("Saved");
         } catch (err) {
             flash(`Save failed: ${err}`);
+        }
+    });
+
+    document.getElementById("add-sound")!.addEventListener("click", async () => {
+        try {
+            const name = await SettingsService.AddSound();
+            if (!name) return;
+            await loadSounds();
+            soundSelect.value = name;
+            form.dispatchEvent(new Event("change"));
+        } catch (err) {
+            flash(`Add failed: ${err}`);
+        }
+    });
+
+    removeButton.addEventListener("click", async () => {
+        const name = soundSelect.value;
+        try {
+            await SettingsService.RemoveSound(name);
+            await loadSounds();
+            soundSelect.value = "Glass";
+            form.dispatchEvent(new Event("change"));
+        } catch (err) {
+            flash(`Remove failed: ${err}`);
         }
     });
 
