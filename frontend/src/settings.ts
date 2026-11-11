@@ -53,7 +53,8 @@ export function initSettings() {
     }
 
     async function load() {
-        const [cfg] = await Promise.all([SettingsService.Get(), loadSounds()]);
+        const [cfg, login] = await Promise.all([SettingsService.Get(), SettingsService.LaunchAtLogin(), loadSounds()]);
+        loginToggle.checked = login;
         for (const name of toggles) {
             checkbox(name).checked = cfg[name];
         }
@@ -66,7 +67,19 @@ export function initSettings() {
         updateRemove();
     }
 
-    form.addEventListener("change", async () => {
+    const loginToggle = form.elements.namedItem("launchAtLogin") as HTMLInputElement;
+
+    form.addEventListener("change", async (event) => {
+        if (event.target === loginToggle) {
+            try {
+                await SettingsService.SetLaunchAtLogin(loginToggle.checked);
+                flash(loginToggle.checked ? "Starts at login" : "Won't start at login");
+            } catch (err) {
+                loginToggle.checked = !loginToggle.checked;
+                flash(`Login item failed: ${err}`);
+            }
+            return;
+        }
         updateRemove();
         soundSelect.disabled = !checkbox("sound").checked;
         bannerPosSelect.disabled = !checkbox("banner").checked;

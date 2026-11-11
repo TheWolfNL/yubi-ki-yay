@@ -71,3 +71,14 @@ func (s *SettingsService) DismissBanner() {
 		s.alerter.banner.Dismiss()
 	}
 }
+
+func (s *SettingsService) LaunchAtLogin() (bool, error) {
+	return application.Get().Autostart.IsEnabled()
+}
+
+func (s *SettingsService) SetLaunchAtLogin(enabled bool) error {
+	if enabled {
+		return application.Get().Autostart.Enable()
+	}
+	return application.Get().Autostart.Disable()
+}

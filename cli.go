@@ -56,6 +56,9 @@ func runNotify(args []string) int {
 	if ipc.SendTouch(touch) == nil {
 		return 0
 	}
+	if err := exec.Command("open", "-g", "-b", bundleID).Start(); err != nil {
+		fmt.Fprintln(os.Stderr, "yubi-ki-yay: start app:", err)
+	}
 	if cfg.Banner {
 		if err := alert.FallbackNotification(text); err != nil {
 			fmt.Fprintln(os.Stderr, "yubi-ki-yay:", err)

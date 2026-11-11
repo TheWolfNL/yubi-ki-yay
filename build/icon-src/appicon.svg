@@ -1,59 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#4a8a35"/>
-      <stop offset="0.35" stop-color="#1f6038"/>
-      <stop offset="0.65" stop-color="#004a3a"/>
-      <stop offset="1" stop-color="#01313f"/>
+    <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a2a2e"/>
+      <stop offset="1" stop-color="#050506"/>
     </linearGradient>
-    <linearGradient id="key" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#1b1b1d"/>
-      <stop offset="0.5" stop-color="#34343a"/>
-      <stop offset="1" stop-color="#151517"/>
-    </linearGradient>
-    <radialGradient id="gold" cx="0.4" cy="0.35" r="0.7">
-      <stop offset="0" stop-color="#ffe79a"/>
-      <stop offset="0.6" stop-color="#d9a633"/>
-      <stop offset="1" stop-color="#9c6b12"/>
+    <radialGradient id="gold" cx="0.38" cy="0.32" r="0.75">
+      <stop offset="0" stop-color="#fff0b8"/>
+      <stop offset="0.45" stop-color="#e8b84a"/>
+      <stop offset="0.85" stop-color="#b98216"/>
+      <stop offset="1" stop-color="#8a5c0c"/>
     </radialGradient>
     <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0" stop-color="#ffd25c" stop-opacity="0.8"/>
+      <stop offset="0.6" stop-color="#ffd25c" stop-opacity="0.35"/>
       <stop offset="1" stop-color="#ffd25c" stop-opacity="0"/>
     </radialGradient>
-    <linearGradient id="vest" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#d9cfb8"/>
-      <stop offset="0.45" stop-color="#f6f1e4"/>
-      <stop offset="1" stop-color="#cfc4aa"/>
-    </linearGradient>
-    <radialGradient id="stain" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0" stop-color="#b49a5c" stop-opacity="0.55"/>
-      <stop offset="1" stop-color="#b49a5c" stop-opacity="0"/>
-    </radialGradient>
-    <clipPath id="frame"><rect x="100" y="100" width="824" height="824" rx="185"/></clipPath>
-    <mask id="keyhole"><rect width="1024" height="1024" fill="#fff"/><circle cx="512" cy="210" r="28" fill="#000"/></mask>
-    <path id="vestshape" d="M398 492 L452 492 L452 520 C456 600 494 626 512 626 C530 626 568 600 572 520 L572 492 L626 492
-             L626 548 C630 604 660 628 700 636 L716 1000 L308 1000 L324 636 C364 628 394 604 398 548 Z"/>
-    <clipPath id="vestclip"><use href="#vestshape"/></clipPath>
   </defs>
-
-  <g clip-path="url(#frame)">
-    <rect x="100" y="100" width="824" height="824" fill="url(#bg)"/>
-    <rect x="392" y="140" width="240" height="900" rx="60" fill="url(#key)" stroke="#000" stroke-width="6" mask="url(#keyhole)"/>
-    <circle cx="512" cy="210" r="28" fill="none" stroke="#000" stroke-width="5"/>
-
-    <circle cx="512" cy="350" r="125" fill="url(#glow)"/>
-    <circle cx="512" cy="350" r="68" fill="url(#gold)" stroke="#6e4a0c" stroke-width="5"/>
-    <text x="512" y="350" dy="0.35em" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif"
-          font-weight="800" font-size="88" fill="#7a4e08">Y</text>
-
-    <use href="#vestshape" fill="url(#vest)"/>
-    <g clip-path="url(#vestclip)">
-      <ellipse cx="330" cy="680" rx="48" ry="40" fill="url(#stain)"/>
-      <ellipse cx="694" cy="680" rx="48" ry="40" fill="url(#stain)"/>
-      <ellipse cx="580" cy="800" rx="42" ry="32" fill="url(#stain)"/>
-      <path d="M440 680 q10 70 -6 150 M590 690 q-12 70 6 140 M512 660 q-8 50 2 90"
-            stroke="#a8996f" stroke-width="6" fill="none" opacity="0.45" stroke-linecap="round"/>
-    </g>
-    <use href="#vestshape" fill="none" stroke="#7d6e4c" stroke-width="6" stroke-linejoin="round"/>
-  </g>
+  <rect x="100" y="100" width="824" height="824" rx="185" fill="url(#tile)"/>
+  <circle cx="512" cy="512" r="360" fill="url(#glow)"/>
+  <circle cx="512" cy="512" r="290" fill="url(#gold)" stroke="#6e4a0c" stroke-width="10"/>
+  <g transform="translate(292 292) scale(4.4)" stroke="#0a0a0a"><path d="M30 20 L50 54 M70 20 L46 72 Q42 80 32 80" fill="none" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/></g>
 </svg>

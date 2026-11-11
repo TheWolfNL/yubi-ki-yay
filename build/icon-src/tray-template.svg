@@ -1,14 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22">
   <defs>
-    <path id="vest" d="M7.9 9.6 H9.4 V10.4 Q9.7 12.3 11 12.5 Q12.3 12.3 12.6 10.4 V9.6 H14.1 V11 Q14.4 12.3 16.4 12.6 L16.7 22 H5.3 L5.6 12.6 Q7.6 12.3 7.9 11 Z"/>
-    <mask id="cut">
+    <mask id="disc">
       <rect width="22" height="22" fill="#fff"/>
-      <use href="#vest" fill="#000" stroke="#000" stroke-width="1.6" stroke-linejoin="round"/>
-      <circle cx="11" cy="2.4" r="0.85" fill="#000"/>
-      <circle cx="11" cy="6" r="2.2" fill="#000"/>
+      <circle cx="11" cy="11" r="7.6" fill="#000"/>
     </mask>
   </defs>
-  <path mask="url(#cut)" fill="#000" d="M9.3 0.6 h3.4 a1.7 1.7 0 0 1 1.7 1.7 v19.7 h-6.8 v-19.7 a1.7 1.7 0 0 1 1.7 -1.7 Z"/>
-  <path fill="#000" transform="translate(0 -0.3)" d="M9.6 4.9 h0.95 l0.45 0.9 l0.45 -0.9 h0.95 l-0.95 1.65 v1.25 h-0.9 v-1.25 Z"/>
-  <use href="#vest" fill="#000"/>
+  <rect x="1" y="1" width="20" height="20" rx="4.6" fill="#000" mask="url(#disc)"/>
+  <g transform="translate(5.5 5.5) scale(0.11)" stroke="#000"><path d="M30 20 L50 54 M70 20 L46 72 Q42 80 32 80" fill="none" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/></g>
 </svg>

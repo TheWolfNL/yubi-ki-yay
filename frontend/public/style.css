@@ -69,7 +69,7 @@ input[type=checkbox] {
 }
 input[type=checkbox]:checked {
     background:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ctext x='10' y='14.2' text-anchor='middle' font-family='Helvetica Neue,Arial,sans-serif' font-weight='800' font-size='14' fill='black'%3Ey%3C/text%3E%3C/svg%3E") right 2px center / 20px 20px no-repeat,
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-20 -20 140 140'%3E%3Cpath d='M30 20 L50 54 M70 20 L46 72 Q42 80 32 80' fill='none' stroke='black' stroke-width='14' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") right 2px center / 20px 20px no-repeat,
         radial-gradient(circle closest-side, #ffe79a 0%, #e0ac3a 60%, #a87414 88%, rgba(0, 0, 0, 0) 100%) right 2px center / 20px 20px no-repeat,
         #2f7a3a;
 }
