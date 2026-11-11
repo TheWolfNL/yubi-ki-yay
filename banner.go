@@ -7,6 +7,7 @@ import (
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 
+	"github.com/tjeerdritsma/yubi-ki-yay/internal/config"
 	"github.com/tjeerdritsma/yubi-ki-yay/internal/ipc"
 )
 
@@ -27,13 +28,13 @@ type Banner struct {
 	timer *time.Timer
 }
 
-// Show replaces any visible banner with one for t.
-func (b *Banner) Show(t ipc.Touch) {
+// Show replaces any visible banner with one for t at pos.
+func (b *Banner) Show(t ipc.Touch, pos string) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	b.closeLocked()
 
-	q := url.Values{"label": {t.Label}, "context": {t.Context}}
+	q := url.Values{"label": {t.Label}, "context": {t.Context}, "pos": {pos}}
 	screen := activeScreen(b.app)
 	if screen == nil {
 		screen = b.app.Screen.GetPrimary()
@@ -68,8 +69,7 @@ func (b *Banner) Show(t ipc.Touch) {
 		},
 	})
 	if screen != nil {
-		menuBar := screen.WorkArea.Y - screen.Bounds.Y
-		win.SetRelativePosition(screen.Bounds.Width-bannerWidth-bannerMargin, menuBar+bannerMargin)
+		win.SetRelativePosition(bannerOrigin(screen, pos))
 	}
 	win.Show()
 	b.win = win
@@ -101,5 +101,27 @@ func (b *Banner) closeLocked() {
 	if b.win != nil {
 		b.win.Close()
 		b.win = nil
+	}
+}
+
+// bannerOrigin returns the banner's top-left corner relative to screen, kept inside the area not covered by the menu bar and Dock.
+func bannerOrigin(screen *application.Screen, pos string) (x, y int) {
+	wa := screen.WorkArea
+	left := wa.X - screen.Bounds.X + bannerMargin
+	right := wa.X - screen.Bounds.X + wa.Width - bannerWidth - bannerMargin
+	top := wa.Y - screen.Bounds.Y + bannerMargin
+	bottom := wa.Y - screen.Bounds.Y + wa.Height - bannerHeight - bannerMargin
+
+	switch pos {
+	case config.BannerTopLeft:
+		return left, top
+	case config.BannerTopCenter:
+		return (screen.Bounds.Width - bannerWidth) / 2, top
+	case config.BannerBottomLeft:
+		return left, bottom
+	case config.BannerBottomRight:
+		return right, bottom
+	default:
+		return right, top
 	}
 }

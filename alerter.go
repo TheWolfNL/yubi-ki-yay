@@ -63,14 +63,14 @@ func (a *Alerter) SetConfig(cfg config.Config) error {
 func (a *Alerter) Trigger(t ipc.Touch) {
 	cfg := a.Config()
 	if cfg.Banner && a.banner != nil {
-		a.banner.Show(t)
+		a.banner.Show(t, cfg.BannerPos)
 	}
 	if cfg.Sound {
 		if err := alert.PlaySound(cfg.SoundName); err != nil {
 			log.Printf("sound: %v", err)
 		}
 	}
-	if cfg.TrayFlash || cfg.TrayHidden() {
+	if cfg.TrayMode != config.TrayNever && (cfg.TrayFlash || cfg.TrayHidden()) {
 		label := ""
 		if cfg.TrayFlash {
 			label = "Touch!"
@@ -79,11 +79,13 @@ func (a *Alerter) Trigger(t ipc.Touch) {
 	}
 }
 
-// RevealOnStartup briefly shows a hidden tray icon so the user can see the app started.
+// RevealOnStartup applies the tray mode at launch, briefly showing an on-touch icon so the user sees the app started.
 func (a *Alerter) RevealOnStartup() {
-	if a.Config().TrayHidden() {
+	if a.Config().TrayMode == config.TrayOnTouch {
 		a.revealTray("", trayStartupDuration)
+		return
 	}
+	a.settleTray()
 }
 
 func (a *Alerter) revealTray(label string, d time.Duration) {

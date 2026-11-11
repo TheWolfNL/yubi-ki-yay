@@ -1,19 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
   <defs>
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#0d1326"/>
-      <stop offset="0.65" stop-color="#3a1d2e"/>
-      <stop offset="1" stop-color="#e2582b"/>
+      <stop offset="0" stop-color="#8fbfe8"/>
+      <stop offset="0.6" stop-color="#f6d3a3"/>
+      <stop offset="1" stop-color="#f39a5c"/>
     </linearGradient>
     <linearGradient id="key" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0" stop-color="#1b1b1d"/>
       <stop offset="0.5" stop-color="#34343a"/>
       <stop offset="1" stop-color="#151517"/>
-    </linearGradient>
-    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#8d9096"/>
-      <stop offset="0.5" stop-color="#e3e5e8"/>
-      <stop offset="1" stop-color="#7c7f85"/>
     </linearGradient>
     <radialGradient id="gold" cx="0.4" cy="0.35" r="0.7">
       <stop offset="0" stop-color="#ffe79a"/>
@@ -33,50 +28,31 @@
       <stop offset="0" stop-color="#b49a5c" stop-opacity="0.55"/>
       <stop offset="1" stop-color="#b49a5c" stop-opacity="0"/>
     </radialGradient>
-    <clipPath id="squircle"><rect x="100" y="100" width="824" height="824" rx="185"/></clipPath>
-    <clipPath id="vestclip">
-      <path id="vestshape" d="M412 470 L452 470 L452 492 C455 548 490 566 512 566 C534 566 569 548 572 492 L572 470 L612 470
-               L612 512 C614 552 630 566 648 570 L654 742
-               Q620 752 584 744 Q548 736 512 746 Q476 756 440 746 Q404 738 370 742
-               L376 570 C394 566 410 552 412 512 Z"/>
-    </clipPath>
+    <clipPath id="frame"><rect x="0" y="0" width="1024" height="924"/></clipPath>
+    <mask id="keyhole"><rect width="1024" height="1024" fill="#fff"/><circle cx="512" cy="210" r="28" fill="#000"/></mask>
+    <path id="vestshape" d="M398 492 L452 492 L452 520 C456 600 494 626 512 626 C530 626 568 600 572 520 L572 492 L626 492
+             L626 548 C630 604 660 628 700 636 L716 1000 L308 1000 L324 636 C364 628 394 604 398 548 Z"/>
+    <clipPath id="vestclip"><use href="#vestshape"/></clipPath>
   </defs>
 
-  <g clip-path="url(#squircle)">
-    <rect x="100" y="100" width="824" height="824" fill="url(#sky)"/>
-    <g fill="#0a0d18" opacity="0.9">
-      <rect x="120" y="600" width="110" height="340"/>
-      <rect x="215" y="680" width="80" height="260"/>
-      <rect x="745" y="560" width="120" height="380"/>
-      <rect x="840" y="650" width="90" height="290"/>
+  <g clip-path="url(#frame)">
+    <rect x="392" y="140" width="240" height="900" rx="60" fill="url(#key)" stroke="#000" stroke-width="6" mask="url(#keyhole)"/>
+    <circle cx="512" cy="210" r="28" fill="none" stroke="#000" stroke-width="5"/>
+
+    <circle cx="512" cy="350" r="125" fill="url(#glow)"/>
+    <circle cx="512" cy="350" r="68" fill="url(#gold)" stroke="#6e4a0c" stroke-width="5"/>
+    <text x="512" y="350" dy="0.35em" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif"
+          font-weight="800" font-size="88" fill="#7a4e08">Y</text>
+
+    <use href="#vestshape" fill="url(#vest)"/>
+    <g clip-path="url(#vestclip)">
+      <ellipse cx="330" cy="680" rx="48" ry="40" fill="url(#stain)"/>
+      <ellipse cx="694" cy="680" rx="48" ry="40" fill="url(#stain)"/>
+      <ellipse cx="580" cy="800" rx="42" ry="32" fill="url(#stain)"/>
+      <path d="M440 680 q10 70 -6 150 M590 690 q-12 70 6 140 M512 660 q-8 50 2 90"
+            stroke="#a8996f" stroke-width="6" fill="none" opacity="0.45" stroke-linecap="round"/>
     </g>
-    <g fill="#ffb347" opacity="0.5">
-      <rect x="140" y="630" width="14" height="10"/><rect x="175" y="660" width="14" height="10"/>
-      <rect x="765" y="600" width="14" height="10"/><rect x="805" y="640" width="14" height="10"/>
-    </g>
+    <use href="#vestshape" fill="none" stroke="#7d6e4c" stroke-width="6" stroke-linejoin="round"/>
+    <rect x="311" y="918" width="402" height="6" fill="#7d6e4c"/>
   </g>
-
-  <ellipse cx="512" cy="872" rx="170" ry="20" fill="#000" opacity="0.35"/>
-
-  <rect x="447" y="690" width="130" height="160" rx="10" fill="url(#metal)" stroke="#3b3d42" stroke-width="5"/>
-  <rect x="472" y="770" width="28" height="28" rx="3" fill="#3b3d42"/>
-  <rect x="524" y="770" width="28" height="28" rx="3" fill="#3b3d42"/>
-
-  <rect x="402" y="214" width="220" height="500" rx="48" fill="url(#key)" stroke="#000" stroke-width="6"/>
-  <circle cx="512" cy="272" r="26" fill="url(#sky)" stroke="#000" stroke-width="5"/>
-
-  <circle cx="512" cy="392" r="105" fill="url(#glow)"/>
-  <circle cx="512" cy="392" r="54" fill="url(#gold)" stroke="#6e4a0c" stroke-width="5"/>
-  <circle cx="512" cy="392" r="26" fill="none" stroke="#fff3c4" stroke-width="5" opacity="0.7"/>
-
-  <ellipse cx="512" cy="750" rx="75" ry="12" fill="#000" opacity="0.35"/>
-  <use href="#vestshape" fill="url(#vest)"/>
-  <g clip-path="url(#vestclip)">
-    <ellipse cx="392" cy="600" rx="40" ry="34" fill="url(#stain)"/>
-    <ellipse cx="632" cy="600" rx="40" ry="34" fill="url(#stain)"/>
-    <ellipse cx="560" cy="676" rx="34" ry="26" fill="url(#stain)"/>
-    <path d="M450 600 q8 50 -4 110 M574 610 q-10 50 4 100 M512 590 q-6 40 2 70"
-          stroke="#a8996f" stroke-width="5" fill="none" opacity="0.45" stroke-linecap="round"/>
-  </g>
-  <use href="#vestshape" fill="none" stroke="#7d6e4c" stroke-width="5" stroke-linejoin="round"/>
 </svg>

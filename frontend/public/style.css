@@ -21,15 +21,22 @@
 body {
     margin: 0;
     font: 13px -apple-system, BlinkMacSystemFont, sans-serif;
-    background: var(--bg);
+    background: linear-gradient(135deg, #4a8a35 0%, #1f6038 35%, #004a3a 65%, #01313f 100%);
     color: var(--fg);
+    min-height: 100vh;
     -webkit-user-select: none;
     user-select: none;
 }
-main { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+main {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+header, footer { color: #fff; }
 header { display: flex; gap: 12px; align-items: center; }
 h1 { font-size: 18px; margin: 0; }
-.sub { margin: 2px 0 0; color: var(--muted); font-size: 12px; }
+.sub { margin: 2px 0 0; color: rgba(255, 255, 255, 0.85); font-size: 12px; }
 form {
     background: var(--card);
     border: 1px solid var(--border);
@@ -45,9 +52,31 @@ form {
 }
 .row:last-child { border-bottom: none; }
 select { margin-left: auto; }
-input[type=checkbox] { accent-color: var(--accent); }
+input[type=checkbox] {
+    -webkit-appearance: none;
+    appearance: none;
+    flex: none;
+    width: 42px;
+    height: 24px;
+    margin: 0;
+    border-radius: 12px;
+    background:
+        radial-gradient(circle closest-side, #ffffff 0%, #e5e5ea 85%, rgba(0, 0, 0, 0) 100%) left 2px center / 20px 20px no-repeat,
+        #a1a1a6;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    transition: background-position 180ms ease, background-color 180ms ease;
+}
+input[type=checkbox]:checked {
+    background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ctext x='10' y='14.2' text-anchor='middle' font-family='Helvetica Neue,Arial,sans-serif' font-weight='800' font-size='14' fill='black'%3Ey%3C/text%3E%3C/svg%3E") right 2px center / 20px 20px no-repeat,
+        radial-gradient(circle closest-side, #ffe79a 0%, #e0ac3a 60%, #a87414 88%, rgba(0, 0, 0, 0) 100%) right 2px center / 20px 20px no-repeat,
+        #2f7a3a;
+}
+input[type=checkbox]:hover { box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25), 0 0 0 2px rgba(224, 172, 58, 0.6); }
+input[type=checkbox]:focus-visible { outline: 2px solid #ffd25c; outline-offset: 2px; }
 footer { display: flex; align-items: center; justify-content: space-between; }
-#status { color: var(--muted); font-size: 12px; }
+#status { color: rgba(255, 255, 255, 0.85); font-size: 12px; }
 button {
     font: inherit;
     padding: 4px 12px;
@@ -56,7 +85,7 @@ button {
     background: var(--card);
     color: var(--fg);
 }
-#test { background: var(--accent); color: #fff; border-color: transparent; }
+#test { background: transparent; color: #fff; border-color: #fff; padding: 5px 16px; }
 
 body.banner {
     background: transparent;
@@ -69,7 +98,7 @@ body.banner {
     align-items: center;
     gap: 12px;
     padding: 0 16px 0 12px;
-    background: rgba(18, 18, 20, 0.94);
+    background: linear-gradient(135deg, #4a8a35 0%, #1f6038 35%, #004a3a 65%, #01313f 100%);
     color: #fff;
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 16px;
@@ -89,8 +118,8 @@ body.leaving .banner-card {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.banner-card .context { color: #e5e5ea; margin-top: 2px; }
-.banner-card .label { color: #8e8e93; }
+.banner-card .context { color: #f2f2f7; margin-top: 2px; }
+.banner-card .label { color: rgba(255, 255, 255, 0.7); }
 .banner-card .pulse {
     margin-left: auto;
     flex: none;
@@ -114,3 +143,12 @@ body.leaving .banner-card {
 .row select { max-width: 160px; }
 .row button { padding: 2px 8px; }
 button:disabled { opacity: 0.4; }
+
+body.slide-left .banner-card { animation-name: slide-in-left; }
+body.slide-left.leaving .banner-card { animation-name: slide-out-left; }
+body.slide-down .banner-card { animation-name: slide-in-down; }
+body.slide-down.leaving .banner-card { animation-name: slide-out-down; }
+@keyframes slide-in-left { from { transform: translateX(-110%); opacity: 0; } }
+@keyframes slide-out-left { to { transform: translateX(-110%); opacity: 0; } }
+@keyframes slide-in-down { from { transform: translateY(-130%); opacity: 0; } }
+@keyframes slide-out-down { to { transform: translateY(-130%); opacity: 0; } }

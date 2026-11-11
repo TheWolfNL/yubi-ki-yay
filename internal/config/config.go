@@ -18,6 +18,7 @@ const systemSoundsDir = "/System/Library/Sounds"
 // Config is shared by the menu-bar app and the notify CLI.
 type Config struct {
 	Banner       bool   `json:"banner"`
+	BannerPos    string `json:"bannerPosition"`
 	Sound        bool   `json:"sound"`
 	SoundName    string `json:"soundName"`
 	TerminalLine bool   `json:"terminalLine"`
@@ -25,16 +26,27 @@ type Config struct {
 	TrayMode     string `json:"trayMode"`
 }
 
+// Banner positions.
+const (
+	BannerTopRight    = "topRight"
+	BannerTopCenter   = "topCenter"
+	BannerTopLeft     = "topLeft"
+	BannerBottomRight = "bottomRight"
+	BannerBottomLeft  = "bottomLeft"
+)
+
 // Tray icon visibility modes.
 const (
 	TrayAlways  = "always"
 	TrayOnTouch = "onTouch"
+	TrayNever   = "never"
 )
 
 // Default returns the settings used when no config file exists.
 func Default() Config {
 	return Config{
 		Banner:       true,
+		BannerPos:    BannerTopRight,
 		Sound:        true,
 		SoundName:    "Glass",
 		TerminalLine: true,
@@ -45,7 +57,7 @@ func Default() Config {
 
 // TrayHidden reports whether the tray icon should stay hidden while idle.
 func (c Config) TrayHidden() bool {
-	return c.TrayMode == TrayOnTouch
+	return c.TrayMode == TrayOnTouch || c.TrayMode == TrayNever
 }
 
 // Dir returns ~/.config/yubi-ki-yay.

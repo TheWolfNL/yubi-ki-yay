@@ -8,7 +8,8 @@ export function initBanner(params: URLSearchParams) {
     const label = params.get("label") ?? "";
     const context = params.get("context") ?? "";
 
-    document.body.className = "banner";
+    const pos = params.get("pos") ?? "topRight";
+    document.body.className = `banner slide-${pos.endsWith("Left") ? "left" : pos.endsWith("Center") ? "down" : "right"}`;
     const text = el("div", {className: "text"});
     text.append(
         el("div", {className: "title", textContent: "👆 Touch your YubiKey"}),

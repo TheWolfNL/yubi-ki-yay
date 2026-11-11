@@ -5,6 +5,7 @@ export function initSettings() {
     const form = document.getElementById("settings") as HTMLFormElement;
     const soundSelect = form.elements.namedItem("soundName") as HTMLSelectElement;
     const trayModeSelect = form.elements.namedItem("trayMode") as HTMLSelectElement;
+    const bannerPosSelect = form.elements.namedItem("bannerPosition") as HTMLSelectElement;
     const status = document.getElementById("status")!;
     let statusTimer: ReturnType<typeof setTimeout>;
 
@@ -23,6 +24,7 @@ export function initSettings() {
     function read(): Config {
         return {
             banner: checkbox("banner").checked,
+            bannerPosition: bannerPosSelect.value,
             sound: checkbox("sound").checked,
             soundName: soundSelect.value,
             terminalLine: checkbox("terminalLine").checked,
@@ -57,6 +59,9 @@ export function initSettings() {
         }
         soundSelect.value = cfg.soundName;
         trayModeSelect.value = cfg.trayMode;
+        bannerPosSelect.value = cfg.bannerPosition;
+        bannerPosSelect.disabled = !cfg.banner;
+        checkbox("trayFlash").disabled = cfg.trayMode === "never";
         soundSelect.disabled = !cfg.sound;
         updateRemove();
     }
@@ -64,6 +69,8 @@ export function initSettings() {
     form.addEventListener("change", async () => {
         updateRemove();
         soundSelect.disabled = !checkbox("sound").checked;
+        bannerPosSelect.disabled = !checkbox("banner").checked;
+        checkbox("trayFlash").disabled = trayModeSelect.value === "never";
         try {
             await SettingsService.Save(read());
             flash("Saved");

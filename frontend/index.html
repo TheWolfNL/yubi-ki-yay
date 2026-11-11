@@ -12,12 +12,20 @@
         <img src="/appicon.png" alt="" width="56" height="56"/>
         <div>
             <h1>Yubi Ki-Yay</h1>
-            <p class="sub">Never miss a YubiKey touch again.</p>
+            <p class="sub">Know when your YubiKey wants a touch, and what's asking for it.</p>
         </div>
     </header>
 
     <form id="settings">
-        <label class="row"><input type="checkbox" name="banner"/> Banner at the top of the screen</label>
+        <label class="row"><input type="checkbox" name="banner"/> Banner
+            <select name="bannerPosition">
+                <option value="topRight">Top right</option>
+                <option value="topCenter">Top center</option>
+                <option value="topLeft">Top left</option>
+                <option value="bottomRight">Bottom right</option>
+                <option value="bottomLeft">Bottom left</option>
+            </select>
+        </label>
         <label class="row"><input type="checkbox" name="sound"/> Sound
             <select name="soundName"></select>
             <button type="button" id="preview" title="Preview sound">▶</button>
@@ -30,6 +38,7 @@
             <select name="trayMode">
                 <option value="always">Always</option>
                 <option value="onTouch">Only when a touch is needed</option>
+                <option value="never">Never</option>
             </select>
         </label>
     </form>
