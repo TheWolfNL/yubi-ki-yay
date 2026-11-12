@@ -74,6 +74,16 @@ func (s *SettingsService) DismissBanner() {
 
 func (s *SettingsService) Version() string { return displayVersion() }
 
+// FitHeight resizes the settings window so its viewport height matches the page content.
+func (s *SettingsService) FitHeight(content, viewport int) {
+	win, ok := application.Get().Window.GetByName("settings")
+	if !ok || content <= 0 || viewport <= 0 {
+		return
+	}
+	w, h := win.Size()
+	win.SetSize(w, h+content-viewport)
+}
+
 func (s *SettingsService) LaunchAtLogin() (bool, error) {
 	return application.Get().Autostart.IsEnabled()
 }

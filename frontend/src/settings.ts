@@ -124,7 +124,12 @@ export function initSettings() {
         SettingsService.Test().then(() => flash("Yippee-ki-yay!"));
     });
 
-    SettingsService.Version().then((v) => (document.getElementById("version")!.textContent = `Yubi Ki-Yay ${v}`));
+    const version = SettingsService.Version().then((v) => {
+        document.getElementById("version")!.textContent = `Yubi Ki-Yay ${v}`;
+    });
 
-    load().catch((err) => flash(`Load failed: ${err}`));
+    Promise.all([load().catch((err) => flash(`Load failed: ${err}`)), version]).finally(() => {
+        const content = Math.ceil(document.querySelector("main")!.getBoundingClientRect().height);
+        SettingsService.FitHeight(content, window.innerHeight);
+    });
 }

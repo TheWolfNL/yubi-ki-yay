@@ -52,7 +52,7 @@ func runApp() error {
 		Name:          "settings",
 		Title:         "Yubi Ki-Yay",
 		Width:         420,
-		Height:        560,
+		Height:        460,
 		Hidden:        true,
 		DisableResize: true,
 		URL:           "/",
