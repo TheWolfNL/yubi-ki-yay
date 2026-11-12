@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a2a2e"/>
+      <stop offset="1" stop-color="#050506"/>
+    </linearGradient>
+    <radialGradient id="gold" cx="0.38" cy="0.32" r="0.75">
+      <stop offset="0" stop-color="#fff0b8"/>
+      <stop offset="0.45" stop-color="#e8b84a"/>
+      <stop offset="0.85" stop-color="#b98216"/>
+      <stop offset="1" stop-color="#8a5c0c"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0.6" stop-color="#ffd25c" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#ffd25c" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect x="100" y="100" width="824" height="824" rx="185" fill="url(#tile)"/>
+  <circle cx="512" cy="512" r="360" fill="url(#glow)"/>
+  <circle cx="512" cy="512" r="290" fill="url(#gold)" stroke="#6e4a0c" stroke-width="10"/>
+  <g transform="translate(292 292) scale(4.4)" stroke="#0a0a0a"><path d="M30 20 L50 54 M70 20 L46 72 Q42 80 32 80" fill="none" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/></g>
+</svg>

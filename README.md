@@ -2,6 +2,8 @@
 
 A macOS menu-bar app that tells you when your YubiKey wants a touch. YubiKey's only cue is a small blinking LED, which is easy to miss.
 
+Website: https://thewolfnl.github.io/yubi-ki-yay/ (source in `docs/`, deployed by `.github/workflows/pages.yml`).
+
 ## How it works
 
 Nothing on macOS reports that a YubiKey (OpenPGP applet behind `gpg-agent`) is waiting for a touch, so hooks fire *before* the operation that needs one:

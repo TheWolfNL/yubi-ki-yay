@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yubi Ki-Yay</title>
+<meta name="description" content="A macOS menu bar app that tells you when your YubiKey wants a touch, and what's asking for it.">
+<link rel="icon" href="appicon.svg" type="image/svg+xml">
+<style>
+:root {
+  --bg: #f6f7f5;
+  --fg: #16201b;
+  --muted: #5b6862;
+  --card: #ffffff;
+  --line: #dfe5e1;
+  --code-bg: #0f1714;
+  --code-fg: #e6ece9;
+  --accent: #1f6038;
+  --gold: #e8b84a;
+  --desk: linear-gradient(160deg, #dfe9e3 0%, #c7d8d0 100%);
+  --brand: linear-gradient(135deg, #4a8a35 0%, #1f6038 35%, #004a3a 65%, #01313f 100%);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0c1210;
+    --fg: #e8eeeb;
+    --muted: #9aa8a1;
+    --card: #141c19;
+    --line: #24302b;
+    --code-bg: #070b0a;
+    --accent: #6fc28a;
+    --desk: linear-gradient(160deg, #1a2622 0%, #0f1916 100%);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0c1210;
+  --fg: #e8eeeb;
+  --muted: #9aa8a1;
+  --card: #141c19;
+  --line: #24302b;
+  --code-bg: #070b0a;
+  --accent: #6fc28a;
+  --desk: linear-gradient(160deg, #1a2622 0%, #0f1916 100%);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 16px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+}
+a { color: var(--accent); }
+code, pre, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 16px; }
+
+/* Hero */
+.hero {
+  background: var(--brand);
+  color: #fff;
+  padding: 72px 0 64px;
+  text-align: center;
+}
+.hero img { width: 112px; height: 112px; filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.35)); }
+.hero h1 { margin: 16px 0 6px; font-size: clamp(36px, 7vw, 56px); letter-spacing: -0.02em; line-height: 1.1; }
+.hero p { margin: 0 auto; max-width: 34em; font-size: clamp(17px, 2.4vw, 20px); color: rgba(255, 255, 255, 0.86); }
+.hero .actions { margin-top: 28px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 20px; border-radius: 999px;
+  font-weight: 600; font-size: 15px; text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.85); color: #fff;
+}
+.btn.primary { background: #fff; color: #0d3a2b; border-color: #fff; }
+.btn:hover { filter: brightness(1.08); }
+
+section { padding: 64px 0 8px; }
+h2 { font-size: clamp(26px, 4vw, 34px); letter-spacing: -0.01em; margin: 0 0 8px; }
+.lede { color: var(--muted); margin: 0 0 28px; max-width: 40em; }
+
+/* Demo stage */
+.desk {
+  position: relative;
+  border-radius: 18px;
+  background: var(--desk);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  min-height: 440px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+}
+.menubar {
+  height: 30px;
+  display: flex; align-items: center; justify-content: flex-end; gap: 14px;
+  padding: 0 14px;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(10px);
+  font-size: 13px; color: #1d1d1f;
+}
+:root[data-theme="dark"] .menubar { background: rgba(0, 0, 0, 0.35); color: #f2f2f7; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .menubar { background: rgba(0, 0, 0, 0.35); color: #f2f2f7; } }
+.tray { display: inline-flex; align-items: center; gap: 4px; font-weight: 600; }
+.tray svg { width: 16px; height: 16px; }
+.tray .touch { display: none; }
+.desk.alerting .tray .touch { display: inline; animation: blink 1s steps(2, start) infinite; }
+.menubar .dim { opacity: 0.7; }
+
+.banner {
+  position: absolute; top: 40px; right: 12px; z-index: 2;
+  width: min(380px, calc(100% - 24px));
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px 14px 12px;
+  background: var(--brand);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  transform: translateX(115%); opacity: 0;
+  transition: transform 280ms cubic-bezier(0.2, 0.9, 0.3, 1.2), opacity 280ms;
+}
+.desk.alerting .banner { transform: none; opacity: 1; }
+.banner img { width: 44px; height: 44px; flex: none; }
+.banner .text { min-width: 0; }
+.banner .title { font-size: 14px; font-weight: 600; }
+.banner .context, .banner .label { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.banner .context { color: #f2f2f7; margin-top: 2px; }
+.banner .label { color: rgba(255, 255, 255, 0.7); }
+.banner .pulse {
+  margin-left: auto; flex: none;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #ffd25c; box-shadow: 0 0 10px #ffd25c;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+.term {
+  position: absolute; left: 24px; bottom: 24px;
+  width: min(620px, calc(100% - 48px));
+  background: #111614;
+  color: #dfe6e2;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+.term .bar { height: 28px; display: flex; align-items: center; gap: 7px; padding: 0 12px; background: #1d2421; }
+.term .bar i { width: 11px; height: 11px; border-radius: 50%; background: #3a4440; }
+.term .bar span { margin-left: auto; margin-right: auto; font-size: 12px; color: #8b9893; transform: translateX(-24px); }
+.term pre { margin: 0; padding: 14px 16px 18px; min-height: 200px; font-size: 13px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
+.term .prompt { color: #6fc28a; }
+.term .yk { color: #ffd84a; font-weight: 700; }
+.term .out { color: #9fb0a8; }
+.term .cursor { display: inline-block; width: 8px; height: 1.1em; vertical-align: text-bottom; background: #dfe6e2; animation: blink 1s steps(2, start) infinite; }
+
+.cues { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px; }
+.cue { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+.cue h3 { margin: 0 0 4px; font-size: 16px; }
+.cue p { margin: 0; color: var(--muted); font-size: 14.5px; }
+
+/* Install */
+.steps { counter-reset: step; display: grid; gap: 18px; padding: 0; margin: 0; list-style: none; }
+.steps > li { counter-increment: step; position: relative; padding-left: 48px; min-width: 0; }
+.steps > li::before {
+  content: counter(step);
+  position: absolute; left: 0; top: 0;
+  width: 32px; height: 32px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--brand); color: #fff; font-weight: 700; font-size: 15px;
+}
+.steps h3 { margin: 3px 0 6px; font-size: 18px; }
+.steps p { margin: 0 0 10px; color: var(--muted); }
+.code {
+  position: relative;
+  margin: 0 0 10px;
+  background: var(--code-bg);
+  color: var(--code-fg);
+  border-radius: 10px;
+  border: 1px solid var(--line);
+}
+.code pre { margin: 0; padding: 14px 52px 14px 16px; font-size: 13.5px; line-height: 1.6; overflow-x: auto; }
+.code .file { display: block; padding: 8px 16px 0; font-size: 12px; color: #8b9893; }
+.copy {
+  position: absolute; top: 8px; right: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.18); background: rgba(255, 255, 255, 0.06);
+  color: #dfe6e2; border-radius: 7px; padding: 4px 8px; font: 12px/1.2 inherit; cursor: pointer;
+}
+.copy:hover { background: rgba(255, 255, 255, 0.14); }
+.note { background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--gold); border-radius: 10px; padding: 12px 16px; color: var(--muted); font-size: 14.5px; margin-top: 28px; }
+.note code, .steps p code, .lede code { background: var(--card); border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px; font-size: 0.9em; color: var(--fg); }
+
+footer { margin-top: 64px; padding: 28px 0 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+footer .wrap { display: flex; gap: 8px 20px; flex-wrap: wrap; justify-content: space-between; }
+
+@keyframes pulse { 50% { opacity: 0.25; transform: scale(0.7); } }
+@keyframes blink { to { visibility: hidden; } }
+
+@media (max-width: 720px) {
+  .cues { grid-template-columns: 1fr; }
+  .desk { min-height: 0; display: flex; flex-direction: column; }
+  .banner { position: relative; top: auto; right: auto; width: auto; margin: 12px 12px 0; }
+  .term { position: relative; left: auto; bottom: auto; width: auto; margin: 12px; }
+  .term pre { font-size: 12px; min-height: 230px; }
+  .menubar .clock-date { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .banner { transition: none; }
+  .banner .pulse, .tray .touch, .term .cursor { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <img src="appicon.svg" alt="Yubi Ki-Yay icon: a black tile with a gold disc and a black y">
+    <h1>Yubi Ki-Yay</h1>
+    <p>Know when your YubiKey wants a touch, and what's asking for it.</p>
+    <div class="actions">
+      <a class="btn primary" href="#install">Install</a>
+      <a class="btn" href="https://github.com/TheWolfNL/yubi-ki-yay">View on GitHub</a>
+    </div>
+  </div>
+</header>
+
+<main>
+<section id="demo">
+  <div class="wrap">
+    <h2>No more staring at a blinking LED</h2>
+    <p class="lede">When git signs a commit or ssh reaches for your key, Yubi Ki-Yay shows a banner on the screen you're working on, prints a line in your terminal, plays a sound and flashes the menu bar, all saying what triggered it.</p>
+
+    <div class="desk" id="desk" aria-label="Animated example: a git command waits for a YubiKey touch">
+      <div class="menubar">
+        <span class="tray" title="Yubi Ki-Yay menu bar icon">
+          <svg viewBox="0 0 22 22" aria-hidden="true"><defs><mask id="disc"><rect width="22" height="22" fill="#fff"/><circle cx="11" cy="11" r="7.6" fill="#000"/></mask></defs><rect x="1" y="1" width="20" height="20" rx="4.6" fill="currentColor" mask="url(#disc)"/><g transform="translate(5.5 5.5) scale(0.11)" stroke="currentColor"><path d="M30 20 L50 54 M70 20 L46 72 Q42 80 32 80" fill="none" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/></g></svg>
+          <span class="touch">Touch!</span>
+        </span>
+        <span class="dim clock-date">Thu 12 Nov</span>
+        <span class="dim">09:41</span>
+      </div>
+
+      <div class="banner" role="status" aria-live="polite">
+        <img src="appicon.svg" alt="">
+        <div class="text">
+          <div class="title">👆 Touch your YubiKey</div>
+          <div class="context" id="b-context">git commit · yubi-ki-yay</div>
+          <div class="label" id="b-label">git signing</div>
+        </div>
+        <span class="pulse"></span>
+      </div>
+
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i><span>~/code/yubi-ki-yay</span></div>
+        <pre id="term"><span class="prompt">❯</span> git commit -m "Add release script"
+<span class="yk">👆 Touch your YubiKey — git commit · yubi-ki-yay (git signing)</span></pre>
+      </div>
+    </div>
+
+    <div class="cues">
+      <div class="cue"><h3>A banner where you're looking</h3><p>It slides onto your active screen without stealing focus, then disappears after 10 seconds. Click or press Esc to dismiss it sooner.</p></div>
+      <div class="cue"><h3>A line in your terminal</h3><p>A bold yellow prompt with a bell, right above the command that's waiting. It also catches the eye of AI agents running in your shell.</p></div>
+      <div class="cue"><h3>Sound and menu bar</h3><p>Pick a system sound or add your own. The menu bar icon can stay visible, appear only when a touch is needed, or stay hidden.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="install">
+  <div class="wrap">
+    <h2>Install</h2>
+    <p class="lede">For macOS 12 or later, and a YubiKey whose OpenPGP keys require a touch, used through <code>gpg-agent</code> for ssh and git signing.</p>
+
+    <ol class="steps">
+      <li>
+        <h3>Install the app</h3>
+        <div class="code"><pre>brew install --cask thewolfnl/tap/yubi-ki-yay</pre></div>
+        <p>This installs <code>Yubi Ki-Yay.app</code> and the <code>yubikiyay</code> command. Open the app once and turn on <strong>Start at login</strong> in its settings.</p>
+      </li>
+      <li>
+        <h3>Alert before ssh uses your key</h3>
+        <p>Save this script and make it executable with <code>chmod +x ~/.local/bin/yk-touch-notify</code>. It exits with 1 on purpose, so the <code>Match</code> block never changes your ssh settings.</p>
+        <div class="code"><span class="file">~/.local/bin/yk-touch-notify</span><pre>#!/usr/bin/env bash
+yubikiyay notify "ssh ${1:-?}"
+exit 1</pre></div>
+        <p>Then add a line to your ssh config for each host whose key is on the YubiKey:</p>
+        <div class="code"><span class="file">~/.ssh/config</span><pre>Match originalhost github.com exec "~/.local/bin/yk-touch-notify %n"</pre></div>
+      </li>
+      <li>
+        <h3>Alert before git signs</h3>
+        <p>A small wrapper around gpg that alerts when signing, and stays quiet when only verifying:</p>
+        <div class="code"><span class="file">~/.local/bin/yk-gpg</span><pre>#!/usr/bin/env bash
+case " $* " in
+  *" --verify "*) ;;
+  *) yubikiyay notify "git signing" ;;
+esac
+exec gpg "$@"</pre></div>
+        <div class="code"><pre>chmod +x ~/.local/bin/yk-gpg
+git config --global gpg.program ~/.local/bin/yk-gpg</pre></div>
+      </li>
+      <li>
+        <h3>Try it</h3>
+        <div class="code"><pre>yubikiyay notify "test alert"</pre></div>
+      </li>
+    </ol>
+
+    <div class="note">The app is ad-hoc signed, not notarized. The Homebrew cask clears macOS's quarantine flag so Gatekeeper lets it open. If a hook runs where Homebrew isn't on <code>PATH</code>, use the full path <code>/opt/homebrew/bin/yubikiyay</code> (<code>/usr/local/bin</code> on Intel Macs).</div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Yubi Ki-Yay · <a href="https://github.com/TheWolfNL/yubi-ki-yay/blob/main/LICENSE.md">PolyForm Shield 1.0.0</a></span>
+    <span>Not affiliated with Yubico. YubiKey is a trademark of Yubico AB.</span>
+  </div>
+</footer>
+
+<script>
+(() => {
+  document.querySelectorAll(".code").forEach((block) => {
+    const button = document.createElement("button");
+    button.className = "copy";
+    button.type = "button";
+    button.textContent = "Copy";
+    button.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(block.querySelector("pre").textContent);
+        button.textContent = "Copied";
+      } catch {
+        button.textContent = "Select & copy";
+      }
+      setTimeout(() => { button.textContent = "Copy"; }, 1500);
+    });
+    block.append(button);
+  });
+
+  const desk = document.getElementById("desk");
+  const term = document.getElementById("term");
+  const ctx = document.getElementById("b-context");
+  const lbl = document.getElementById("b-label");
+
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    desk.classList.add("alerting");
+    return;
+  }
+
+  const scenes = [
+    {
+      cmd: 'git commit -m "Add release script"',
+      context: "git commit · yubi-ki-yay",
+      label: "git signing",
+      after: ["[main 6cb333b] Add release script", " 1 file changed, 92 insertions(+)"],
+    },
+    {
+      cmd: "git push",
+      context: "git push · yubi-ki-yay · via Claude Code",
+      label: "ssh github.com",
+      after: ["To github.com:TheWolfNL/yubi-ki-yay.git", "   8bdcd75..6cb333b  main -> main"],
+    },
+  ];
+
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const esc = (s) => s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]);
+  const prompt = '<span class="prompt">❯</span> ';
+  const cursor = '<span class="cursor"></span>';
+
+  async function play() {
+    let history = "";
+    for (const s of scenes) {
+      ctx.textContent = s.context;
+      lbl.textContent = s.label;
+      for (let i = 0; i <= s.cmd.length; i++) {
+        term.innerHTML = history + prompt + esc(s.cmd.slice(0, i)) + cursor;
+        await sleep(45 + Math.random() * 40);
+      }
+      await sleep(350);
+      history += prompt + esc(s.cmd) + "\n";
+      const line = `<span class="yk">👆 Touch your YubiKey — ${esc(s.context)} (${esc(s.label)})</span>\n`;
+      term.innerHTML = history + line + cursor;
+      desk.classList.add("alerting");
+      await sleep(3400);
+      desk.classList.remove("alerting");
+      history += line;
+      for (const out of s.after) {
+        history += `<span class="out">${esc(out)}</span>\n`;
+        term.innerHTML = history + cursor;
+        await sleep(160);
+      }
+      await sleep(1400);
+    }
+    term.innerHTML = history + prompt + cursor;
+    await sleep(2600);
+  }
+
+  (async () => {
+    for (;;) await play();
+  })();
+})();
+</script>
+</body>
+</html>
