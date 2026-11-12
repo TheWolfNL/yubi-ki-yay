@@ -15,7 +15,7 @@ import (
 const (
 	bundleID     = "com.github.thewolfnl.yubikiyay"
 	settingsFlag = "--settings"
-	cliUsage     = "usage: yubikiyay notify [label] | yubikiyay settings"
+	cliUsage     = "usage: yubikiyay notify [label] | yubikiyay settings | yubikiyay --version"
 )
 
 // runCLI handles subcommands; ok is false when args are not a CLI invocation.
@@ -28,6 +28,9 @@ func runCLI(args []string) (code int, ok bool) {
 		return runNotify(args[1:]), true
 	case "settings":
 		return runSettings(), true
+	case "version", "-v", "--version":
+		fmt.Println("Yubi Ki-Yay", displayVersion())
+		return 0, true
 	case "help", "-h", "--help":
 		fmt.Println(cliUsage)
 		return 0, true

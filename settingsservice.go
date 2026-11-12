@@ -72,6 +72,8 @@ func (s *SettingsService) DismissBanner() {
 	}
 }
 
+func (s *SettingsService) Version() string { return displayVersion() }
+
 func (s *SettingsService) LaunchAtLogin() (bool, error) {
 	return application.Get().Autostart.IsEnabled()
 }
