@@ -13,13 +13,16 @@ import (
 // Title is the headline used by every alert channel.
 const Title = "👆 Touch your YubiKey"
 
-// TerminalLine writes the prompt to the controlling terminal; it is a no-op without one.
+// TerminalLine writes the prompt to the controlling terminal unless another program owns it.
 func TerminalLine(text string) {
 	tty, err := os.OpenFile("/dev/tty", os.O_WRONLY, 0)
 	if err != nil {
 		return
 	}
 	defer tty.Close()
+	if !ownsTerminal(tty) {
+		return
+	}
 	fmt.Fprintf(tty, "\a\033[1;33m%s — %s\033[0m\n", Title, text)
 }
 
