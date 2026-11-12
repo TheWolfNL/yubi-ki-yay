@@ -190,7 +190,19 @@ h2 { font-size: clamp(26px, 4vw, 34px); letter-spacing: -0.01em; margin: 0 0 8px
 .note { background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--gold); border-radius: 10px; padding: 12px 16px; color: var(--muted); font-size: 14.5px; margin-top: 28px; }
 .note code, .steps p code, .lede code { background: var(--card); border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px; font-size: 0.9em; color: var(--fg); }
 
-footer { margin-top: 64px; padding: 28px 0 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+.changelog-section { padding-top: 40px; }
+.changelog { border: 1px solid var(--line); border-radius: 12px; background: var(--card); font-size: 14.5px; }
+.changelog summary { cursor: pointer; padding: 12px 16px; color: var(--muted); font-weight: 600; }
+.changelog summary:hover { color: var(--fg); }
+.changelog #releases { padding: 0 16px 8px; }
+.release { border-top: 1px solid var(--line); padding: 12px 0; }
+.release h3 { margin: 0; font-size: 15px; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.release h3 a { color: var(--fg); text-decoration: none; }
+.release time, .muted { color: var(--muted); font-weight: 400; font-size: 13px; }
+.release ul { margin: 6px 0 0; padding-left: 20px; color: var(--muted); }
+.release li { margin: 2px 0; overflow-wrap: anywhere; }
+
+footer { margin-top: 48px; padding: 28px 0 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
 footer .wrap { display: flex; gap: 8px 20px; flex-wrap: wrap; justify-content: space-between; }
 
 @keyframes pulse { 50% { opacity: 0.25; transform: scale(0.7); } }
@@ -306,6 +318,15 @@ git config --global gpg.program ~/.local/bin/yk-gpg</pre></div>
     <div class="note">The app is ad-hoc signed, not notarized. The Homebrew cask clears macOS's quarantine flag so Gatekeeper lets it open. If a hook runs where Homebrew isn't on <code>PATH</code>, use the full path <code>/opt/homebrew/bin/yubikiyay</code> (<code>/usr/local/bin</code> on Intel Macs).</div>
   </div>
 </section>
+
+<section id="changelog" class="changelog-section">
+  <div class="wrap">
+    <details class="changelog">
+      <summary>Changelog</summary>
+      <div id="releases"><p class="muted">Loading releases…</p></div>
+    </details>
+  </div>
+</section>
 </main>
 
 <footer>
@@ -332,6 +353,44 @@ git config --global gpg.program ~/.local/bin/yk-gpg</pre></div>
       setTimeout(() => { button.textContent = "Copy"; }, 1500);
     });
     block.append(button);
+  });
+
+  const releasesEl = document.getElementById("releases");
+  const releasesUrl = "https://github.com/TheWolfNL/yubi-ki-yay/releases";
+  document.querySelector(".changelog").addEventListener("toggle", async function load(event) {
+    if (!event.target.open) return;
+    event.target.removeEventListener("toggle", load);
+    try {
+      const res = await fetch("https://api.github.com/repos/TheWolfNL/yubi-ki-yay/releases?per_page=20");
+      if (!res.ok) throw new Error(res.status);
+      const releases = (await res.json()).filter((r) => !r.draft);
+      if (!releases.length) throw new Error("none");
+      releasesEl.replaceChildren(...releases.map((r) => {
+        const item = document.createElement("article");
+        item.className = "release";
+        const h = document.createElement("h3");
+        const a = Object.assign(document.createElement("a"), { href: r.html_url, textContent: r.tag_name });
+        const t = Object.assign(document.createElement("time"), {
+          dateTime: r.published_at,
+          textContent: new Date(r.published_at).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }),
+        });
+        h.append(a, t);
+        item.append(h);
+        const changes = (r.body || "").split(/\r?\n/).filter((l) => /^[-*] /.test(l)).map((l) => l.slice(2));
+        const ul = document.createElement("ul");
+        if (changes.length) {
+          ul.append(...changes.map((c) => Object.assign(document.createElement("li"), { textContent: c })));
+        } else {
+          const li = document.createElement("li");
+          li.append(Object.assign(document.createElement("a"), { href: r.html_url, textContent: "See what changed" }));
+          ul.append(li);
+        }
+        item.append(ul);
+        return item;
+      }));
+    } catch {
+      releasesEl.innerHTML = `<p class="muted">Couldn't load releases. See <a href="${releasesUrl}">GitHub releases</a>.</p>`;
+    }
   });
 
   const desk = document.getElementById("desk");

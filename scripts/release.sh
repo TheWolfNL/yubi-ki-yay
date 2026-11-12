@@ -85,19 +85,37 @@ tag=$(next_for "$bump")
 
 git rev-parse -q --verify "refs/tags/$tag" >/dev/null && die "$tag already exists"
 
+notes=$(git log --no-merges --invert-grep --grep='^chore: release v' --format='- %s' "$range")
+section=$(printf '## %s (%s)\n\n%s\n' "$tag" "$(date +%Y-%m-%d)" "$notes")
+
+echo "${dim}CHANGELOG.md gets:${reset}"
+echo "$section" | sed 's/^/  /'
+echo
+
 action=$(pick "$tag" "$current → $tag" \
-  "push"$'\t'"Create signed tag and push ${dim}(starts the release)${reset}" \
-  "local"$'\t'"Create signed tag only" \
+  "push"$'\t'"Commit changelog, tag and push ${dim}(starts the release)${reset}" \
+  "local"$'\t'"Commit changelog and tag only" \
   "cancel"$'\t'"${red}Cancel${reset}") || die "cancelled"
 [ "$action" != cancel ] || die "cancelled"
 
+[ -f CHANGELOG.md ] || printf '# Changelog\n' >CHANGELOG.md
+SECTION="$section" awk '
+  !done && /^## / { print ENVIRON["SECTION"]; print ""; done = 1 }
+  { print }
+  END { if (!done) { print ""; print ENVIRON["SECTION"] } }
+' CHANGELOG.md >CHANGELOG.md.tmp
+mv CHANGELOG.md.tmp CHANGELOG.md
+
+git add CHANGELOG.md
+git commit --quiet -m "chore: release $tag"
+ok "committed CHANGELOG.md"
 git tag -s "$tag" -m "Yubi Ki-Yay ${tag#v}"
 ok "created signed tag ${bold}$tag${reset}"
 
 if [ "$action" = push ]; then
-  step "pushing $tag to $remote"
-  git push --quiet "$remote" "refs/tags/$tag"
+  step "pushing $branch and $tag to $remote"
+  git push --quiet --atomic "$remote" "$branch" "refs/tags/$tag"
   ok "pushed ${bold}$tag${reset} ${blue}→ release workflow started${reset}"
 else
-  echo "${dim}push later with:${reset} git push $remote $tag"
+  echo "${dim}push later with:${reset} git push --atomic $remote $branch $tag"
 fi

@@ -12,6 +12,8 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-go@v5
         with:
@@ -55,8 +57,16 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           zip="Yubi-Ki-Yay-${VERSION}-universal.zip"
+          prev=$(git describe --tags --abbrev=0 "${GITHUB_REF_NAME}^" 2>/dev/null || true)
+          awk -v head="## $GITHUB_REF_NAME (" 'index($0, head) == 1 { f = 1; next } f && /^## / { exit } f && (NF || seen) { seen = 1; print }' CHANGELOG.md > notes.md || true
+          if ! grep -q . notes.md; then
+            git log --no-merges --format="- %s" "${prev:+$prev..}$GITHUB_REF_NAME" > notes.md
+          fi
+          if [ -n "$prev" ]; then
+            printf "\n**Full changelog:** https://github.com/%s/compare/%s...%s\n" "$GITHUB_REPOSITORY" "$prev" "$GITHUB_REF_NAME" >> notes.md
+          fi
           gh release create "$GITHUB_REF_NAME" "$zip" "$zip.sha256" \
-            --title "Yubi Ki-Yay ${VERSION}" --generate-notes
+            --title "Yubi Ki-Yay ${VERSION}" --notes-file notes.md
 
       - name: Bump Homebrew cask
         env:
