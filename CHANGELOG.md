@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.2.0 (2026-11-12)
+
+- feat: keep a changelog as part of the release process
+- feat: show the version in settings and yubikiyay --version
+
 ## v0.1.1 (2026-11-12)
 
 - fix: skip the terminal line when another program owns the terminal
