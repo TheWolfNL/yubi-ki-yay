@@ -180,7 +180,7 @@
 					"$(inherited)",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "io.ritsma.yubikiyay";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.github.thewolfnl.yubikiyay";
 				PRODUCT_NAME = "Yubi Ki-Yay";
 				CODE_SIGNING_ALLOWED = NO;
 				SDKROOT = iphoneos;
@@ -196,7 +196,7 @@
 					"$(inherited)",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "io.ritsma.yubikiyay";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.github.thewolfnl.yubikiyay";
 				PRODUCT_NAME = "Yubi Ki-Yay";
 				CODE_SIGNING_ALLOWED = NO;
 				SDKROOT = iphoneos;

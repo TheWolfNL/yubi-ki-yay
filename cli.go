@@ -6,14 +6,14 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/tjeerdritsma/yubi-ki-yay/internal/alert"
-	"github.com/tjeerdritsma/yubi-ki-yay/internal/config"
-	"github.com/tjeerdritsma/yubi-ki-yay/internal/ipc"
-	"github.com/tjeerdritsma/yubi-ki-yay/internal/trigger"
+	"github.com/TheWolfNL/yubi-ki-yay/internal/alert"
+	"github.com/TheWolfNL/yubi-ki-yay/internal/config"
+	"github.com/TheWolfNL/yubi-ki-yay/internal/ipc"
+	"github.com/TheWolfNL/yubi-ki-yay/internal/trigger"
 )
 
 const (
-	bundleID     = "io.ritsma.yubikiyay"
+	bundleID     = "com.github.thewolfnl.yubikiyay"
 	settingsFlag = "--settings"
 	cliUsage     = "usage: yubikiyay notify [label] | yubikiyay settings"
 )

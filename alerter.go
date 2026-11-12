@@ -7,9 +7,9 @@ import (
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 
-	"github.com/tjeerdritsma/yubi-ki-yay/internal/alert"
-	"github.com/tjeerdritsma/yubi-ki-yay/internal/config"
-	"github.com/tjeerdritsma/yubi-ki-yay/internal/ipc"
+	"github.com/TheWolfNL/yubi-ki-yay/internal/alert"
+	"github.com/TheWolfNL/yubi-ki-yay/internal/config"
+	"github.com/TheWolfNL/yubi-ki-yay/internal/ipc"
 )
 
 const (

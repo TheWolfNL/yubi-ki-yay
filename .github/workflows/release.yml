@@ -1,0 +1,59 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install wails3
+        run: |
+          version=$(go list -m -f '{{.Version}}' github.com/wailsapp/wails/v3)
+          go install "github.com/wailsapp/wails/v3/cmd/wails3@${version}"
+
+      - name: Set version from tag
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          echo "VERSION=${version}" >> "$GITHUB_ENV"
+          plutil -replace CFBundleShortVersionString -string "$version" build/darwin/Info.plist
+          plutil -replace CFBundleVersion -string "$version" build/darwin/Info.plist
+
+      - name: Build universal app
+        run: wails3 task darwin:package:universal
+
+      - name: Sign and zip
+        run: |
+          app="bin/Yubi Ki-Yay.app"
+          zip="Yubi-Ki-Yay-${VERSION}-universal.zip"
+          rm -rf "$app"
+          mv bin/yubi-ki-yay.app "$app"
+          lipo "$app/Contents/MacOS/yubi-ki-yay" -verify_arch arm64 x86_64
+          codesign --force --deep -s - "$app"
+          codesign --verify --deep --strict "$app"
+          ditto -c -k --keepParent "$app" "$zip"
+          shasum -a 256 "$zip" | tee "$zip.sha256"
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          zip="Yubi-Ki-Yay-${VERSION}-universal.zip"
+          gh release create "$GITHUB_REF_NAME" "$zip" "$zip.sha256" \
+            --title "Yubi Ki-Yay ${VERSION}" --generate-notes

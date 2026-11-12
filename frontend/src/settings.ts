@@ -1,5 +1,5 @@
-import {SettingsService} from "../bindings/github.com/tjeerdritsma/yubi-ki-yay";
-import type {Config} from "../bindings/github.com/tjeerdritsma/yubi-ki-yay/internal/config";
+import {SettingsService} from "../bindings/github.com/TheWolfNL/yubi-ki-yay";
+import type {Config} from "../bindings/github.com/TheWolfNL/yubi-ki-yay/internal/config";
 
 export function initSettings() {
     const form = document.getElementById("settings") as HTMLFormElement;

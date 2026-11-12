@@ -8,7 +8,7 @@
   IgnorableNamespaces="uap3">
   
   <Identity 
-    Name="io.ritsma.yubikiyay"
+    Name="com.github.thewolfnl.yubikiyay"
     Publisher="CN=My Company"
     Version="0.1.0.0"
     ProcessorArchitecture="arm64" />
@@ -29,7 +29,7 @@
   </Resources>
   
   <Applications>
-    <Application Id="io.ritsma.yubikiyay" Executable="yubi-ki-yay" EntryPoint="Windows.FullTrustApplication">
+    <Application Id="com.github.thewolfnl.yubikiyay" Executable="yubi-ki-yay" EntryPoint="Windows.FullTrustApplication">
       <uap:VisualElements
         DisplayName="Yubi Ki-Yay"
         Description="Tells you when your YubiKey wants a touch"

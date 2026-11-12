@@ -1,4 +1,4 @@
-import {SettingsService} from "../bindings/github.com/tjeerdritsma/yubi-ki-yay";
+import {SettingsService} from "../bindings/github.com/TheWolfNL/yubi-ki-yay";
 
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, props: Partial<HTMLElementTagNameMap[K]>) {
     return Object.assign(document.createElement(tag), props);

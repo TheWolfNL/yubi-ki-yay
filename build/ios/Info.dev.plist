@@ -5,7 +5,7 @@
     <key>CFBundleExecutable</key>
     <string>yubi-ki-yay</string>
     <key>CFBundleIdentifier</key>
-    <string>io.ritsma.yubikiyay.dev</string>
+    <string>com.github.thewolfnl.yubikiyay.dev</string>
     <key>CFBundleName</key>
     <string>Yubi Ki-Yay (Dev)</string>
     <key>CFBundleDisplayName</key>

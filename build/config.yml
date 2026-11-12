@@ -7,11 +7,11 @@ version: '3'
 info:
   companyName: "Tjeerd Ritsma" # The name of the company
   productName: "Yubi Ki-Yay" # The name of the application
-  productIdentifier: "io.ritsma.yubikiyay" # The unique product identifier
+  productIdentifier: "com.github.thewolfnl.yubikiyay" # The unique product identifier
   description: "Tells you when your YubiKey wants a touch" # The application description
   copyright: "(c) 2026, Tjeerd Ritsma" # Copyright text
   comments: "" # Comments
-  version: "0.0.1" # The application version
+  version: "0.1.0" # The application version
   # cfBundleIconName: "appicon" # The macOS icon name in Assets.car icon bundles (optional)
   #                               # Should match the name of your .icon file without the extension
   #                               # If not set and Assets.car exists, defaults to "appicon"

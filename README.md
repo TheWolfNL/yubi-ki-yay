@@ -15,7 +15,15 @@ The CLI walks its parent processes to say what triggered the touch (e.g. `git pu
 
 The menu bar icon can be shown always, only while a touch is needed (it also shows for 5 s at startup), or never. With the icon hidden, reach Settings by opening the app again (Spotlight/Finder) or running `yubikiyay settings`.
 
-## Build and install
+## Install
+
+```bash
+brew install --cask thewolfnl/tap/yubi-ki-yay
+```
+
+The cask installs the app, links the CLI as `yubikiyay` and clears the quarantine flag (the app is ad-hoc signed, not notarized). The CLI then lives at `$(brew --prefix)/bin/yubikiyay` instead of `~/.local/bin/yubikiyay`; adjust the hook paths below.
+
+## Build from source
 
 Needs Go, Node 20+ and the Wails v3 CLI (`go install github.com/wailsapp/wails/v3/cmd/wails3@latest`).
 
@@ -47,3 +55,11 @@ git (per directory via `includeIf`): `gpg.program = ~/.local/bin/yk-gpg`, a wrap
 
 - Vite is pinned to 6 because Vite 8 requires Node ≥ 20.19.
 - The icon is a YubiKey in a grubby white tank top. Source SVGs are in `build/icon-src/`; regenerate with `inkscape` and `wails3 task common:generate:icons`.
+
+## Releasing
+
+Push a `vX.Y.Z` tag. `.github/workflows/release.yml` builds a universal (arm64 + amd64) app, ad-hoc signs it and attaches `Yubi-Ki-Yay-X.Y.Z-universal.zip` plus its `.sha256` to a GitHub release. Then run the **Bump cask** workflow in [TheWolfNL/homebrew-tap](https://github.com/TheWolfNL/homebrew-tap) with the version.
+
+## License
+
+[PolyForm Shield 1.0.0](LICENSE.md). Required Notice: Copyright Tjeerd Ritsma (https://github.com/TheWolfNL)

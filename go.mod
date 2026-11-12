@@ -1,4 +1,4 @@
-module github.com/tjeerdritsma/yubi-ki-yay
+module github.com/TheWolfNL/yubi-ki-yay
 
 go 1.26.0
 

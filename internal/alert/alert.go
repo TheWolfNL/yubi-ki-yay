@@ -7,7 +7,7 @@ import (
 	"os/exec"
 	"strconv"
 
-	"github.com/tjeerdritsma/yubi-ki-yay/internal/config"
+	"github.com/TheWolfNL/yubi-ki-yay/internal/config"
 )
 
 // Title is the headline used by every alert channel.

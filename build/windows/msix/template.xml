@@ -25,7 +25,7 @@
         </Capabilities>
         <Applications>
             <Application
-                Id="io.ritsma.yubikiyay"
+                Id="com.github.thewolfnl.yubikiyay"
                 Description="Tells you when your YubiKey wants a touch"
                 DisplayName="Yubi Ki-Yay"
                 ExecutableName="yubi-ki-yay"
