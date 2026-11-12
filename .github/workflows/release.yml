@@ -21,7 +21,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
@@ -36,6 +36,12 @@ jobs:
           echo "VERSION=${version}" >> "$GITHUB_ENV"
           plutil -replace CFBundleShortVersionString -string "$version" build/darwin/Info.plist
           plutil -replace CFBundleVersion -string "$version" build/darwin/Info.plist
+
+      - name: Type check frontend
+        run: |
+          wails3 generate bindings -clean=true -ts -i
+          npm ci --prefix frontend
+          npm run typecheck --prefix frontend
 
       - name: Build universal app
         run: wails3 task darwin:package:universal

@@ -27,13 +27,13 @@ The cask installs the app, links the CLI as `yubikiyay` and clears the quarantin
 
 ## Build from source
 
-Needs Go, Node 20+ and the Wails v3 CLI (`go install github.com/wailsapp/wails/v3/cmd/wails3@latest`).
+Needs Go, Node 20.19+ or 22.12+ (`.nvmrc` pins 26) and the Wails v3 CLI (`go install github.com/wailsapp/wails/v3/cmd/wails3@latest`).
 
 ```bash
 wails3 task install
 ```
 
-This builds the app, installs it to `~/Applications/Yubi Ki-Yay.app` and links the CLI to `~/.local/bin/yubikiyay`.
+This builds the app, installs it to `~/Applications/Yubi Ki-Yay.app` and links the CLI to `~/.local/bin/yubikiyay`. Run `npm run typecheck --prefix frontend` to type check the frontend; the release workflow runs it before building.
 
 ## Hooks
 
@@ -55,7 +55,6 @@ git (per directory via `includeIf`): `gpg.program = ~/.local/bin/yk-gpg`, a wrap
 
 ## Notes
 
-- Vite is pinned to 6 because Vite 8 requires Node ≥ 20.19.
 - The icon is a YubiKey in a grubby white tank top. Source SVGs are in `build/icon-src/`; regenerate with `inkscape` and `wails3 task common:generate:icons`.
 
 ## Releasing
