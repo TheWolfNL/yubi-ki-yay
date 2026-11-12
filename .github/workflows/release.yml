@@ -57,3 +57,11 @@ jobs:
           zip="Yubi-Ki-Yay-${VERSION}-universal.zip"
           gh release create "$GITHUB_REF_NAME" "$zip" "$zip.sha256" \
             --title "Yubi Ki-Yay ${VERSION}" --generate-notes
+
+      - name: Bump Homebrew cask
+        env:
+          TAP_TOKEN: ${{ secrets.TAP_DISPATCH_TOKEN }}
+        run: |
+          [ -n "$TAP_TOKEN" ] || { echo "::notice::TAP_DISPATCH_TOKEN not set, skipping cask bump"; exit 0; }
+          GH_TOKEN="$TAP_TOKEN" gh api repos/TheWolfNL/homebrew-tap/dispatches \
+            -f event_type=bump-cask -f 'client_payload[cask]=yubi-ki-yay' -f "client_payload[version]=${VERSION}"

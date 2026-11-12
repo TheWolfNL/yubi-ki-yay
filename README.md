@@ -58,7 +58,7 @@ git (per directory via `includeIf`): `gpg.program = ~/.local/bin/yk-gpg`, a wrap
 
 ## Releasing
 
-Push a `vX.Y.Z` tag. `.github/workflows/release.yml` builds a universal (arm64 + amd64) app, ad-hoc signs it and attaches `Yubi-Ki-Yay-X.Y.Z-universal.zip` plus its `.sha256` to a GitHub release. Then run the **Bump cask** workflow in [TheWolfNL/homebrew-tap](https://github.com/TheWolfNL/homebrew-tap) with the version.
+Push a `vX.Y.Z` tag. `.github/workflows/release.yml` builds a universal (arm64 + amd64) app, ad-hoc signs it and attaches `Yubi-Ki-Yay-X.Y.Z-universal.zip` plus its `.sha256` to a GitHub release. It then sends a `bump-cask` dispatch to [TheWolfNL/homebrew-tap](https://github.com/TheWolfNL/homebrew-tap), which updates the cask. This needs a `TAP_DISPATCH_TOKEN` secret: a fine-grained token for the tap repo with Contents read and write. Without it the step is skipped and you run the tap's **Bump cask** workflow by hand.
 
 ## License
 
