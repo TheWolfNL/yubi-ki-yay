@@ -69,6 +69,12 @@ tasks:
     cmds:
       - task: common:run:docker
 
+  release:
+    summary: Creates a signed semver tag (asks major/minor/patch) and optionally pushes it to start a release
+    interactive: true
+    cmds:
+      - ./scripts/release.sh
+
   install:
     summary: Packages the app, installs it to ~/Applications and links the yubikiyay CLI into ~/.local/bin
     deps: [package]
